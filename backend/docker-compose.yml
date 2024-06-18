@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: container-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bd
+      PGDATA: /data/postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/data:/data/postgres
