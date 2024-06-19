@@ -43,20 +43,17 @@ $ yarn run start:dev
 
 # production mode
 $ yarn run start:prod
+
+# instanciar migration
+$ npx prisma migrate dev
+
+# atualizar banco produção
+$ npx prisma migrate deploy
+
+#atualizar tipagem prisma
+$ npx prisma generate
 ```
 
-## Test
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
 
 ## Support
 
