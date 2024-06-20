@@ -1,9 +1,10 @@
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateDtoUser } from './dto/create.dto';
+
 import { Response } from 'express';
 import { CreateUserService } from './services/create-user.service';
+import { CreateUserDTO } from './dto/create-user.dto';
 
 @Controller('user')
 @ApiTags('User')
@@ -16,10 +17,10 @@ export class UserController {
   })
   @Post()
   async signupUser(
-    @Body() userData: CreateDtoUser,
+    @Body() data: CreateUserDTO,
     @Res() res: Response,
   ): Promise<Response> {
-    await this.createService.createUser(userData);
+    await this.createService.create(data);
     return res.status(HttpStatus.CREATED).json();
   }
 }

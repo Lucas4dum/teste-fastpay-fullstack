@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env';
 import { AuthenticateModule } from './auth/auth.module';
+import { TransactionModule } from './transactions/transaction.module';
 
 @Module({
   imports: [
@@ -16,8 +17,7 @@ import { AuthenticateModule } from './auth/auth.module';
     PrismaModule,
     UserModule,
     AuthenticateModule,
+    TransactionModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

@@ -1,13 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateDtoUser } from '../dto/create.dto';
+
 import { hash } from 'bcryptjs';
+import { CreateUserDTO } from '../dto/create-user.dto';
 
 @Injectable()
 export class CreateUserService {
   constructor(private prisma: PrismaService) {}
 
-  async createUser({ email, password }: CreateDtoUser): Promise<void> {
+  async create({ email, password }: CreateUserDTO): Promise<void> {
     const user = await this.prisma.user.count({ where: { email } });
     if (user) {
       throw new HttpException(
