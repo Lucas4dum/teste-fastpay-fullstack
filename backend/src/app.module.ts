@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env';
 import { AuthenticateModule } from './auth/auth.module';
 import { TransactionModule } from './transactions/transaction.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TransactionModule } from './transactions/transaction.module';
     UserModule,
     AuthenticateModule,
     TransactionModule,
+    CategoryModule,
   ],
 })
 export class AppModule {}

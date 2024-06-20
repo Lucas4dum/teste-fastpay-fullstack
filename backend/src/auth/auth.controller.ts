@@ -4,6 +4,7 @@ import { CreateSessionDTO } from './dto/create-session.dto';
 import { AuthService } from './serivces/auth.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { AuthResponse } from './dto/auth-response.dto';
 
 @Controller('session')
 @ApiTags('Session')
@@ -11,15 +12,15 @@ export class AuthenticateController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({
-    summary: 'Rota para logar usuário.',
+    summary: 'Logar usuário.',
     description:
-      'Rota utilizada para criar transação.<br/><br/><b>campos necessários</b>\n\nemail: string\n\npassword: string\n\n',
+      'Rota utilizada para logar usuário.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\nemail: string\n\npassword: string\n\n',
   })
   @ApiResponse({
-    status: 200,
-    description: 'Access token generated successfully.',
+    status: 201,
+    type: AuthResponse,
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 401, description: 'User crendentials do not match.' })
   @Post()
   async auth(
     @Body() data: CreateSessionDTO,

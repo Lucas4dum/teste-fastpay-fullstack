@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 import { CreateUserService } from './services/create-user.service';
@@ -11,9 +11,13 @@ import { CreateUserDTO } from './dto/create-user.dto';
 export class UserController {
   constructor(private readonly createService: CreateUserService) {}
   @ApiOperation({
-    summary: 'Rota para cadastrar um usuário.',
+    summary: 'Cadastrar usuário.',
     description:
-      'Rota utilizada para criar usuários.<br/><br/><b>campos necessários</b>\n\nemail: string\n\npassword: string\n\n',
+      'Rota utilizada para criar usuários.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\nemail: string\n\npassword: string\n\n',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully.',
   })
   @Post()
   async signupUser(
@@ -21,6 +25,6 @@ export class UserController {
     @Res() res: Response,
   ): Promise<Response> {
     await this.createService.create(data);
-    return res.status(HttpStatus.CREATED).json();
+    return res.status(HttpStatus.CREATED).json('User created successfully.');
   }
 }

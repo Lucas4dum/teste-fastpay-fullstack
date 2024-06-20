@@ -16,39 +16,39 @@ import {
 
 import { Response } from 'express';
 
-import { CreateTransactionDTO } from './dtos/create-transaction.dto';
-import { CreateTransactionService } from './services/create-transaction.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { UserPayload } from 'src/auth/strategies/jwt.strategy';
+import { CreateCategoryService } from './services/create-transaction.service';
+import { CreateCategoryDTO } from './dtos/create-category.dto';
 
-@Controller('transaction')
+@Controller('category')
 @UseGuards(JwtAuthGuard)
-@ApiTags('Transaction')
-export class TransactionController {
-  constructor(private readonly createService: CreateTransactionService) {}
+@ApiTags('Category')
+export class CategoryController {
+  constructor(private readonly createService: CreateCategoryService) {}
   //configurações do swagger
   @ApiOperation({
-    summary: 'Cadastrar transação.',
+    summary: 'Cadastrar categoria.',
     description:
-      'Rota utilizada para criar transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*description: string\n\n*amount: number\n\n*date: string - **"adendo o formato deve ser ISO-8601"**\n\n*categoryId: string\n\n',
+      'Rota utilizada para criar categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*name: string\n\n',
   })
   @ApiBearerAuth() // Indica que a autenticação via Bearer Token
   @ApiResponse({
     status: 201,
-    description: 'Transaction created successfully.',
+    description: 'Category created successfully.',
   })
-  @ApiResponse({ status: 400, description: 'Error creating transaction!.' })
+  @ApiResponse({ status: 400, description: 'Error creating category!.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({
     status: 409,
-    description: 'The specified category does not exist!',
+    description: 'The category with that name already exists!',
   })
   @Post()
   async create(
     @CurrentUser() user: UserPayload,
     @Body()
-    data: CreateTransactionDTO,
+    data: CreateCategoryDTO,
     @Res() res: Response,
   ): Promise<Response> {
     const userId: string = user.sub as string;
@@ -59,6 +59,6 @@ export class TransactionController {
 
     return res
       .status(HttpStatus.CREATED)
-      .json('Transaction created successfully.');
+      .json('Category created successfully.');
   }
 }
