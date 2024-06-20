@@ -25,6 +25,6 @@ export class CreateDtoUser {
         'The password must contain at least 6 characters, namely: 1 lowercase letter, 1 number and 1 uppercase letter.',
     },
   )
-  @IsNotEmpty({ message: "O campo 'password' não pode estar vazio." })
+  @IsNotEmpty({ message: "The 'password' field cannot be empty." })
   password!: string;
 }
