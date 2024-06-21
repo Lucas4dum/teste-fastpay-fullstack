@@ -72,8 +72,6 @@ O serviço estará disponível pelo endereço http://localhost:3333.
 
 A documentação(**Swagger**) da rota pode ser encontrada no endereço: http://localhost:3333/docs.
 
-Existe um arquivo com a collection para ser utilizada no **Postman**: [Download](https://drive.google.com/file/d/1rQUUf6OxaxVy4Rrh9xMMCL5Y3E84vmlp/view?usp=sharing)
-
 ### ⚙️ Configuração
 
 Não se esqueça de configurar o arquivo de variáveis ambiente para que o projeto funcione corretamente.
