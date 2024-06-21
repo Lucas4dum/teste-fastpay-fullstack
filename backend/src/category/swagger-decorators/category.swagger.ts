@@ -90,7 +90,7 @@ export class CategoryControllerSwaggerDecorators {
   static UpdateCategory() {
     return applyDecorators(
       ApiOperation({
-        summary: 'Atualizar category.',
+        summary: 'Atualizar categoria.',
         description:
           'Rota utilizada para atualizar uma categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n<b>CAMPOS OPCIONAIS</b>\n\name: string\n\n',
       }),
@@ -131,9 +131,9 @@ export class CategoryControllerSwaggerDecorators {
   static DeleteCategory() {
     return applyDecorators(
       ApiOperation({
-        summary: 'Deletar transação.',
+        summary: 'Deletar categoria.',
         description:
-          'Rota utilizada para deletar uma transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n',
+          'Rota utilizada para deletar uma categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n',
       }),
       ApiParam({
         name: 'id',
@@ -147,11 +147,16 @@ export class CategoryControllerSwaggerDecorators {
         status: 201,
         description: 'Category deleted successfully.',
       }),
-      ApiResponse({ status: 400, description: 'Error deleting transaction!' }),
+      ApiResponse({ status: 400, description: 'Error deleting category!' }),
       ApiResponse({ status: 401, description: 'Unauthorized.' }),
       ApiResponse({
         status: 409,
         description: 'The specified category does not exist!',
+      }),
+      ApiResponse({
+        status: 410,
+        description:
+          'The specified category is associated with one or more transactions!',
       }),
     );
   }

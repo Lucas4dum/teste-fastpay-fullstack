@@ -8,6 +8,7 @@ import {
   Get,
   Put,
   Param,
+  Delete,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
@@ -22,7 +23,7 @@ import { CreateCategoryDTO } from './dtos/create-category.dto';
 import { CategoryControllerSwaggerDecorators } from './swagger-decorators/category.swagger';
 import { ListCategoriesService } from './services/list-categories.service';
 import { UpdateCategoryService } from './services/update-category.service';
-import { UpdateCategoryDTO } from './dtos/update-category.dto';
+import { DeleteCategoryService } from './services/delete-category.service';
 
 @Controller('category')
 @UseGuards(JwtAuthGuard)
@@ -32,6 +33,7 @@ export class CategoryController {
     private readonly createService: CreateCategoryService,
     private readonly listCategoriesService: ListCategoriesService,
     private readonly updateCategoryService: UpdateCategoryService,
+    private readonly deleteCategoryService: DeleteCategoryService,
   ) {}
 
   @CategoryControllerSwaggerDecorators.CreateCategory()
@@ -74,5 +76,16 @@ export class CategoryController {
     await this.updateCategoryService.update({ id, name: data.name });
 
     return res.status(HttpStatus.OK).json('Category updated successfully.');
+  }
+
+  @CategoryControllerSwaggerDecorators.DeleteCategory()
+  @Delete('/:id')
+  async delete(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    await this.deleteCategoryService.delete(id);
+
+    return res.status(HttpStatus.OK).json('Transaction deleted successfully.');
   }
 }
