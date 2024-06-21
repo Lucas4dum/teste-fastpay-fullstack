@@ -5,45 +5,31 @@ import {
   Res,
   HttpStatus,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { UserPayload } from 'src/auth/strategies/jwt.strategy';
-import { CreateCategoryService } from './services/create-transaction.service';
+import { CreateCategoryService } from './services/create-category.service';
 import { CreateCategoryDTO } from './dtos/create-category.dto';
+import { CategoryControllerSwaggerDecorators } from './swagger-decorators/category.swagger';
+import { ListCategoriesService } from './services/list-categories.service';
 
 @Controller('category')
 @UseGuards(JwtAuthGuard)
 @ApiTags('Category')
 export class CategoryController {
-  constructor(private readonly createService: CreateCategoryService) {}
-  //configurações do swagger
-  @ApiOperation({
-    summary: 'Cadastrar categoria.',
-    description:
-      'Rota utilizada para criar categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*name: string\n\n',
-  })
-  @ApiBearerAuth() // Indica que a autenticação via Bearer Token
-  @ApiResponse({
-    status: 201,
-    description: 'Category created successfully.',
-  })
-  @ApiResponse({ status: 400, description: 'Error creating category!.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({
-    status: 409,
-    description: 'The category with that name already exists!',
-  })
+  constructor(
+    private readonly createService: CreateCategoryService,
+    private readonly listCategoriesService: ListCategoriesService,
+  ) {}
+
+  @CategoryControllerSwaggerDecorators.CreateCategory()
   @Post()
   async create(
     @CurrentUser() user: UserPayload,
@@ -53,12 +39,23 @@ export class CategoryController {
   ): Promise<Response> {
     const userId: string = user.sub as string;
 
-    data = { ...data, userId };
-
-    await this.createService.create(data);
+    await this.createService.create({ ...data, userId });
 
     return res
       .status(HttpStatus.CREATED)
       .json('Category created successfully.');
+  }
+
+  @CategoryControllerSwaggerDecorators.ListCategories()
+  @Get()
+  async list(
+    @CurrentUser() user: UserPayload,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const userId: string = user.sub as string;
+
+    const categories = await this.listCategoriesService.list(userId);
+
+    return res.status(HttpStatus.OK).send({ categories });
   }
 }

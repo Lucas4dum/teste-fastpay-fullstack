@@ -22,7 +22,6 @@ import { CurrentUser } from 'src/auth/current-user.decorator';
 import { UserPayload } from 'src/auth/strategies/jwt.strategy';
 import { ListTransactionsService } from './services/list-transaction.service';
 import { TransactionSwaggerDecorators } from './swagger-decorators/transaction.swagger';
-import { ListTransactionsByCategoryDTO } from './dtos/list-transactions-by-category.dto';
 import { ListTransactionsByCategoryService } from './services/list-transactions-by-category.service';
 import { UpdateTransactionService } from './services/update-transaction.service';
 import { UpdateTransactionDTO } from './dtos/update-transaction.dto';

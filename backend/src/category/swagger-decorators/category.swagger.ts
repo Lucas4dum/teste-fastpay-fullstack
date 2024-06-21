@@ -7,34 +7,23 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 
-export class TransactionSwaggerDecorators {
-  static ListTransactionsByCategory() {
+export class CategoryControllerSwaggerDecorators {
+  static ListCategories() {
     return applyDecorators(
       ApiOperation({
-        summary: 'Listar transações por categoria',
-        description:
-          'Rota utilizada para listar transações por categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*categoryId: string',
+        summary: 'Listar categorias.',
+        description: 'Rota utilizada para listar categorias.\n\n',
       }),
       ApiBearerAuth(), // Indica que a autenticação via Bearer Token
-      ApiParam({
-        name: 'categoryId',
-        type: String,
-        required: true,
-        description: 'formato UUID',
-        example: 'a4a37c4b-42dc-4db8-9d6e-4d3feedfae14',
-      }),
       ApiResponse({
         status: 200,
         schema: {
           type: 'array',
           example: {
-            transactions: [
+            categories: [
               {
-                id: '550e8400-e29b-41d4-a716-446655440000',
-                description: 'Grocery shopping',
-                amount: 100.0,
-                date: '2023-06-18',
-                categoryId: '550e8400-e29b-41d4-a716-446655440000',
+                id: '726c2d72-d630-4ee3-8476-147866157573',
+                name: 'teste1',
                 userId: '550e8400-e29b-41d4-a716-446655440000',
                 createdAt: '2023-06-18T00:00:00Z',
                 updatedAt: '2023-06-18T00:00:00Z',
@@ -47,45 +36,13 @@ export class TransactionSwaggerDecorators {
     );
   }
 
-  static ListTransactions() {
+  static CreateCategory() {
     return applyDecorators(
       ApiOperation({
-        summary: 'Listar transações.',
-        description: 'Rota utilizada para listar transações.\n\n',
-      }),
-      ApiBearerAuth(), // Indica que a autenticação via Bearer Token
-      ApiResponse({
-        status: 200,
-        schema: {
-          type: 'array',
-          example: {
-            transactions: [
-              {
-                id: '550e8400-e29b-41d4-a716-446655440000',
-                description: 'Grocery shopping',
-                amount: 100.0,
-                date: '2023-06-18',
-                categoryId: '550e8400-e29b-41d4-a716-446655440000',
-                userId: '550e8400-e29b-41d4-a716-446655440000',
-                createdAt: '2023-06-18T00:00:00Z',
-                updatedAt: '2023-06-18T00:00:00Z',
-              },
-            ],
-          },
-        },
-      }),
-      ApiResponse({ status: 401, description: 'Unauthorized.' }),
-    );
-  }
-
-  static CreateTransaction() {
-    return applyDecorators(
-      ApiOperation({
-        summary: 'Cadastrar transação.',
+        summary: 'Cadastrar categoria.',
         description:
-          'Rota utilizada para criar transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*description: string\n\n*amount: number\n\n*date: string - **"adendo o formato deve ser ISO-8601"**\n\n*categoryId: string\n\n',
+          'Rota utilizada para criar categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*name: string\n\n',
       }),
-      ApiBearerAuth(),
       ApiBody({
         schema: {
           type: 'object',
@@ -114,20 +71,23 @@ export class TransactionSwaggerDecorators {
           required: ['description', 'amount', 'date', 'categoryId'],
         },
       }),
+      //configurações do swagger
+
+      ApiBearerAuth(), // Indica que a autenticação via Bearer Token
       ApiResponse({
         status: 201,
-        description: 'Transaction created successfully.',
+        description: 'Category created successfully.',
       }),
-      ApiResponse({ status: 400, description: 'Error creating transaction!.' }),
+      ApiResponse({ status: 400, description: 'Error creating category!.' }),
       ApiResponse({ status: 401, description: 'Unauthorized.' }),
       ApiResponse({
         status: 409,
-        description: 'The specified category does not exist!',
+        description: 'The category with that name already exists!',
       }),
     );
   }
 
-  static UpdateTransaction() {
+  static UpdateCategory() {
     return applyDecorators(
       ApiOperation({
         summary: 'Atualizar transação.',
@@ -188,7 +148,7 @@ export class TransactionSwaggerDecorators {
     );
   }
 
-  static DeleteTransaction() {
+  static DeleteCategory() {
     return applyDecorators(
       ApiOperation({
         summary: 'Deletar transação.',
