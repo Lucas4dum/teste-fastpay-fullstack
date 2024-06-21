@@ -1,4 +1,4 @@
-export default interface ITransction {
+export default interface ITransaction {
   id?: string;
   description: string;
   amount: number;
