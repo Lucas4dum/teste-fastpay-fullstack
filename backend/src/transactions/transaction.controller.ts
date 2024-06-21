@@ -6,7 +6,8 @@ import {
   HttpStatus,
   UseGuards,
   Get,
-  Query,
+  Put,
+  Param,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
@@ -22,6 +23,8 @@ import { ListTransactionsService } from './services/list-transaction.service';
 import { TransactionSwaggerDecorators } from './swagger-decorators/transaction.swagger';
 import { ListTransactionsByCategoryDTO } from './dtos/list-transactions-by-category.dto';
 import { ListTransactionsByCategoryService } from './services/list-transactions-by-category.service';
+import { UpdateTransactionService } from './services/update-transaction.service';
+import { UpdateTransactionDTO } from './dtos/update-transaction.dto';
 
 @Controller('transaction')
 @UseGuards(JwtAuthGuard)
@@ -31,6 +34,7 @@ export class TransactionController {
     private readonly createService: CreateTransactionService,
     private readonly listTransactionsService: ListTransactionsService,
     private readonly listTransactionsByCategoryService: ListTransactionsByCategoryService,
+    private readonly updateTransactionService: UpdateTransactionService,
   ) {}
   @TransactionSwaggerDecorators.CreateTransaction()
   @Post()
@@ -65,19 +69,35 @@ export class TransactionController {
   }
 
   @TransactionSwaggerDecorators.ListTransactionsByCategory()
-  @Get('by-category')
+  @Get('by-category/:categoryId')
   async listByCategory(
     @CurrentUser() user: UserPayload,
-    @Query() query: ListTransactionsByCategoryDTO,
+    @Param('categoryId') categoryId: string,
     @Res() res: Response,
   ): Promise<Response> {
     const userId: string = user.sub as string;
-    const categoryId = query.categoryId;
     const transactions = await this.listTransactionsByCategoryService.list({
       userId,
       categoryId,
     });
 
     return res.status(HttpStatus.OK).send({ transactions });
+  }
+
+  @TransactionSwaggerDecorators.UpdateTransaction()
+  @Put('/:id')
+  async update(
+    @CurrentUser() user: UserPayload,
+    @Body() data: UpdateTransactionDTO,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const userId: string = user.sub as string;
+    console.log('teste\n', id);
+    data = { ...data, userId, id };
+
+    await this.updateTransactionService.update(data);
+
+    return res.status(HttpStatus.OK).json('Transaction updated successfully.');
   }
 }

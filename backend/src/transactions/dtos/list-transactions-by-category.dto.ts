@@ -5,5 +5,5 @@ export class ListTransactionsByCategoryDTO {
   @IsNotEmpty({ message: "The 'categoryId' field cannot be empty." })
   categoryId!: string;
 
-  userId?: string;
+  userId!: string;
 }
