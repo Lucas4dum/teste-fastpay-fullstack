@@ -18,6 +18,7 @@ export class UpdateCategoryService {
       where: {
         name: {
           contains: `%${name}%`,
+          mode: 'insensitive',
         },
       },
     });

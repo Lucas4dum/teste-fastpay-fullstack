@@ -11,6 +11,7 @@ export class CreateCategoryService {
       where: {
         name: {
           contains: `%${data.name}%`,
+          mode: 'insensitive',
         },
       },
     });

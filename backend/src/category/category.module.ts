@@ -4,6 +4,7 @@ import { CategoryController } from './category.controller';
 import { ListCategoriesService } from './services/list-categories.service';
 import { UpdateCategoryService } from './services/update-category.service';
 import { DeleteCategoryService } from './services/delete-category.service';
+import { ListSummaryOfTransactionsByCategoryService } from './services/list-summary-of-transactions-by-category.service';
 
 @Global()
 @Module({
@@ -12,6 +13,7 @@ import { DeleteCategoryService } from './services/delete-category.service';
     ListCategoriesService,
     UpdateCategoryService,
     DeleteCategoryService,
+    ListSummaryOfTransactionsByCategoryService,
   ],
   controllers: [CategoryController],
 })
