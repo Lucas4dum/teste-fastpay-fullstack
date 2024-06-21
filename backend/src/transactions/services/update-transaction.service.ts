@@ -17,6 +17,13 @@ export class UpdateTransactionService {
       );
     }
 
+    const transaction = await this.prisma.category.findUnique({
+      where: { id: data.id },
+    });
+    if (!transaction) {
+      throw new HttpException('The specified transaction does not exist!', 410);
+    }
+
     let correctedDate: string | undefined;
 
     if (data.date && typeof data.date === 'string') {

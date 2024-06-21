@@ -183,6 +183,42 @@ export class TransactionSwaggerDecorators {
         status: 409,
         description: 'The specified category does not exist!',
       }),
+      ApiResponse({
+        status: 410,
+        description: 'The specified transaction does not exist!',
+      }),
+    );
+  }
+
+  static DeleteTransaction() {
+    return applyDecorators(
+      ApiOperation({
+        summary: 'Deletar transação.',
+        description:
+          'Rota utilizada para deletar uma transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n',
+      }),
+      ApiParam({
+        name: 'id',
+        type: String,
+        required: true,
+        description: 'formato UUID',
+        example: '80fb7941-8152-42c7-91ef-4ec9f5fae286',
+      }),
+      ApiBearerAuth(),
+      ApiResponse({
+        status: 201,
+        description: 'Transaction deleted successfully.',
+      }),
+      ApiResponse({ status: 400, description: 'Error deleting transaction!' }),
+      ApiResponse({ status: 401, description: 'Unauthorized.' }),
+      ApiResponse({
+        status: 409,
+        description: 'The specified category does not exist!',
+      }),
+      ApiResponse({
+        status: 410,
+        description: 'The specified transaction does not exist!',
+      }),
     );
   }
 }

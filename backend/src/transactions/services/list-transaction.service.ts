@@ -5,9 +5,8 @@ import { Transaction } from '@prisma/client';
 @Injectable()
 export class ListTransactionsService {
   constructor(private prisma: PrismaService) {}
-
   async list(userId: string): Promise<Transaction[]> {
-    return this.prisma.transaction.findMany({
+    return await this.prisma.transaction.findMany({
       where: { userId },
     });
   }

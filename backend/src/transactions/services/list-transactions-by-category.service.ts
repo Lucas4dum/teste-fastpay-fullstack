@@ -11,7 +11,7 @@ export class ListTransactionsByCategoryService {
     userId,
     categoryId,
   }: ListTransactionsByCategoryDTO): Promise<Transaction[]> {
-    return this.prisma.transaction.findMany({
+    return await this.prisma.transaction.findMany({
       where: { userId, categoryId },
     });
   }
