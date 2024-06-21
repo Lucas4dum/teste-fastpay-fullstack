@@ -6,6 +6,8 @@ import {
   HttpStatus,
   UseGuards,
   Get,
+  Put,
+  Param,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
@@ -19,6 +21,8 @@ import { CreateCategoryService } from './services/create-category.service';
 import { CreateCategoryDTO } from './dtos/create-category.dto';
 import { CategoryControllerSwaggerDecorators } from './swagger-decorators/category.swagger';
 import { ListCategoriesService } from './services/list-categories.service';
+import { UpdateCategoryService } from './services/update-category.service';
+import { UpdateCategoryDTO } from './dtos/update-category.dto';
 
 @Controller('category')
 @UseGuards(JwtAuthGuard)
@@ -27,6 +31,7 @@ export class CategoryController {
   constructor(
     private readonly createService: CreateCategoryService,
     private readonly listCategoriesService: ListCategoriesService,
+    private readonly updateCategoryService: UpdateCategoryService,
   ) {}
 
   @CategoryControllerSwaggerDecorators.CreateCategory()
@@ -57,5 +62,17 @@ export class CategoryController {
     const categories = await this.listCategoriesService.list(userId);
 
     return res.status(HttpStatus.OK).send({ categories });
+  }
+
+  @CategoryControllerSwaggerDecorators.UpdateCategory()
+  @Put('/:id')
+  async update(
+    @Body() data: { name: string },
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    await this.updateCategoryService.update({ id, name: data.name });
+
+    return res.status(HttpStatus.OK).json('Category updated successfully.');
   }
 }

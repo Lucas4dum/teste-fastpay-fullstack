@@ -7,17 +7,19 @@ export class UpdateTransactionService {
   constructor(private prisma: PrismaService) {}
 
   async update(data: UpdateTransactionDTO): Promise<void> {
-    const category = await this.prisma.category.findUnique({
-      where: { id: data.categoryId },
-    });
-    if (!category) {
-      throw new HttpException(
-        'The specified category does not exist!',
-        HttpStatus.CONFLICT,
-      );
+    if (data.categoryId) {
+      const category = await this.prisma.category.findUnique({
+        where: { id: data.categoryId },
+      });
+      if (!category) {
+        throw new HttpException(
+          'The specified category does not exist!',
+          HttpStatus.CONFLICT,
+        );
+      }
     }
 
-    const transaction = await this.prisma.category.findUnique({
+    const transaction = await this.prisma.transaction.findUnique({
       where: { id: data.id },
     });
     if (!transaction) {

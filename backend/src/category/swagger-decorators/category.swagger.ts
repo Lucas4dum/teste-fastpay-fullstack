@@ -90,9 +90,9 @@ export class CategoryControllerSwaggerDecorators {
   static UpdateCategory() {
     return applyDecorators(
       ApiOperation({
-        summary: 'Atualizar transação.',
+        summary: 'Atualizar category.',
         description:
-          'Rota utilizada para atualizar uma transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n<b>CAMPOS OPCIONAIS</b>\n\ndescription: string\n\namount: number\n\ndate: string - **"adendo o formato deve ser ISO-8601"**\n\ncategoryId: string\n\n',
+          'Rota utilizada para atualizar uma categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n<b>CAMPOS OPCIONAIS</b>\n\name: string\n\n',
       }),
       ApiParam({
         name: 'id',
@@ -107,25 +107,9 @@ export class CategoryControllerSwaggerDecorators {
         schema: {
           type: 'object',
           properties: {
-            description: {
+            name: {
               type: 'string',
-              example: 'Grocery shopping',
-              description: 'Description of the transaction',
-            },
-            amount: {
-              type: 'number',
-              example: 100.0,
-              description: 'Amount of the transaction',
-            },
-            date: {
-              type: 'string',
-              example: '2023-06-18',
-              description: 'Date of the transaction in YYYY-MM-DD format',
-            },
-            categoryId: {
-              type: 'string',
-              example: '550e8400-e29b-41d4-a716-446655440000',
-              description: 'UUID of the category the transaction belongs to',
+              example: 'teste2',
             },
           },
           required: ['description', 'amount', 'date', 'categoryId'],
@@ -133,17 +117,13 @@ export class CategoryControllerSwaggerDecorators {
       }),
       ApiResponse({
         status: 201,
-        description: 'Transaction updated successfully.',
+        description: 'Category updated successfully.',
       }),
-      ApiResponse({ status: 400, description: 'Error updating transaction!' }),
+      ApiResponse({ status: 400, description: 'Error updating category!' }),
       ApiResponse({ status: 401, description: 'Unauthorized.' }),
       ApiResponse({
         status: 409,
         description: 'The specified category does not exist!',
-      }),
-      ApiResponse({
-        status: 410,
-        description: 'The specified transaction does not exist!',
       }),
     );
   }
@@ -165,17 +145,13 @@ export class CategoryControllerSwaggerDecorators {
       ApiBearerAuth(),
       ApiResponse({
         status: 201,
-        description: 'Transaction deleted successfully.',
+        description: 'Category deleted successfully.',
       }),
       ApiResponse({ status: 400, description: 'Error deleting transaction!' }),
       ApiResponse({ status: 401, description: 'Unauthorized.' }),
       ApiResponse({
         status: 409,
         description: 'The specified category does not exist!',
-      }),
-      ApiResponse({
-        status: 410,
-        description: 'The specified transaction does not exist!',
       }),
     );
   }

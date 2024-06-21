@@ -64,8 +64,33 @@ $ docker-compose up -d
 # Instalar as dependências
 $ yarn
 
+# Criar a migration das tabelas
+$ yarn prisma:migrate:dev
+
 # Iniciar o projeto em ambiente de desenvolvimento
 $ yarn dev
+```
+
+Em caso de problema com os volumes do docker siga os comandos abaixo:
+
+```bash
+# Visualizar os containeres
+docker ps -a
+
+# Pausar os containers
+docker-compose down
+
+# Listar os volumes
+docker volume ls
+
+# Apagar todos os volumes e lista os hashs apagados
+$ docker volume rm $(docker volume ls -q)
+
+# CUIDADO - Containeres desta maneira serão apagados caso estejam inutilizados
+$ docker system prune -a --volumes
+
+# Apagar a pasta onde o banco local é salvo
+$ sudo rm -rf ./postgres/data
 ```
 
 O serviço estará disponível pelo endereço http://localhost:3333.

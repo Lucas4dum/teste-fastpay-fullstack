@@ -83,7 +83,7 @@ export class TransactionSwaggerDecorators {
       ApiOperation({
         summary: 'Cadastrar transação.',
         description:
-          'Rota utilizada para criar transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*description: string\n\n*amount: number\n\n*date: string - **"adendo o formato deve ser ISO-8601"**\n\n*categoryId: string\n\n',
+          'Rota utilizada para criar transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*description: string\n\n*amount: number\n\n*date: string - **"Data da transação no formato AAAA-MM-DD."**\n\n*categoryId: string\n\n',
       }),
       ApiBearerAuth(),
       ApiBody({
@@ -93,22 +93,20 @@ export class TransactionSwaggerDecorators {
             description: {
               type: 'string',
               example: 'Grocery shopping',
-              description: 'Description of the transaction',
             },
             amount: {
               type: 'number',
               example: 100.0,
-              description: 'Amount of the transaction',
             },
             date: {
               type: 'string',
               example: '2023-06-18',
-              description: 'Date of the transaction in YYYY-MM-DD format',
+              description: 'Data da transação no formato AAAA-MM-DD',
             },
             categoryId: {
               type: 'string',
               example: '550e8400-e29b-41d4-a716-446655440000',
-              description: 'UUID of the category the transaction belongs to',
+              description: 'UUID da categoria à qual a transação pertence',
             },
           },
           required: ['description', 'amount', 'date', 'categoryId'],
@@ -132,7 +130,7 @@ export class TransactionSwaggerDecorators {
       ApiOperation({
         summary: 'Atualizar transação.',
         description:
-          'Rota utilizada para atualizar uma transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n<b>CAMPOS OPCIONAIS</b>\n\ndescription: string\n\namount: number\n\ndate: string - **"adendo o formato deve ser ISO-8601"**\n\ncategoryId: string\n\n',
+          'Rota utilizada para atualizar uma transação.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n<b>CAMPOS OPCIONAIS</b>\n\ndescription: string\n\namount: number\n\ndate: string - **"Data da transação no formato AAAA-MM-DD"**\n\ncategoryId: string\n\n',
       }),
       ApiParam({
         name: 'id',
@@ -150,22 +148,20 @@ export class TransactionSwaggerDecorators {
             description: {
               type: 'string',
               example: 'Grocery shopping',
-              description: 'Description of the transaction',
             },
             amount: {
               type: 'number',
               example: 100.0,
-              description: 'Amount of the transaction',
             },
             date: {
               type: 'string',
               example: '2023-06-18',
-              description: 'Date of the transaction in YYYY-MM-DD format',
+              description: 'Data da transação no formato AAAA-MM-DD',
             },
             categoryId: {
               type: 'string',
               example: '550e8400-e29b-41d4-a716-446655440000',
-              description: 'UUID of the category the transaction belongs to',
+              description: 'UUID da categoria à qual a transação pertence',
             },
           },
           required: ['description', 'amount', 'date', 'categoryId'],

@@ -6,7 +6,7 @@ export class DeleteTransactionService {
   constructor(private prisma: PrismaService) {}
 
   async delete(id: string): Promise<void> {
-    const transaction = await this.prisma.category.findUnique({
+    const transaction = await this.prisma.transaction.findUnique({
       where: { id },
     });
     if (!transaction) {

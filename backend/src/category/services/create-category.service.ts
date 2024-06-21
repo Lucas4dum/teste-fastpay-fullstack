@@ -7,8 +7,12 @@ export class CreateCategoryService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateCategoryDTO): Promise<void> {
-    const category = await this.prisma.category.findUnique({
-      where: { name: data.name },
+    const category = await this.prisma.category.findFirst({
+      where: {
+        name: {
+          contains: `%${data.name}%`,
+        },
+      },
     });
     if (category) {
       throw new HttpException(

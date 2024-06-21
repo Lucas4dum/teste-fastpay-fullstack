@@ -34,7 +34,7 @@ model Transaction {
 
 model Category {
   id          String      @id @default(uuid())  
-  name        String      @unique
+  name        String     
   userId      String      @map("user_id")
   createdAt DateTime      @default(now()) @map("created_at")
   updatedAt DateTime      @updatedAt @map("update_at")

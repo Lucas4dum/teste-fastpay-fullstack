@@ -9,6 +9,7 @@ import {
   Put,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
@@ -87,14 +88,19 @@ export class TransactionController {
   @TransactionSwaggerDecorators.UpdateTransaction()
   @Put('/:id')
   async update(
-    @CurrentUser() user: UserPayload,
     @Body() data: UpdateTransactionDTO,
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<Response> {
-    const userId: string = user.sub as string;
+    const { description, amount, date, categoryId } = data;
 
-    await this.updateTransactionService.update({ ...data, userId, id });
+    if (!(description || amount || date || categoryId)) {
+      throw new BadRequestException(
+        'At least one of description, amount, date, or categoryId must be provided.',
+      );
+    }
+
+    await this.updateTransactionService.update({ ...data, id });
 
     return res.status(HttpStatus.OK).json('Transaction updated successfully.');
   }
@@ -107,6 +113,6 @@ export class TransactionController {
   ): Promise<Response> {
     await this.deleteTransactionService.delete(id);
 
-    return res.status(HttpStatus.OK).json('Transaction updated successfully.');
+    return res.status(HttpStatus.OK).json('Transaction deleted successfully.');
   }
 }
