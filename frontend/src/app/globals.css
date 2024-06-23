@@ -1,3 +1,12 @@
+:root {
+  --bg-primary: #343f4d;
+  --bg-secondary: #202024;
+  --bg-input: #121214;
+  --text-secondary: #939393;
+  --bg-button: #0765df;
+}
+
+/* Tailwind CSS base styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

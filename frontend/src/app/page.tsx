@@ -3,5 +3,5 @@ export default function Welcome() {
     <div>
       <h1>Olá Mundo!</h1>
     </div>
-  );
+  )
 }
