@@ -1,6 +1,7 @@
-import React, { FormEvent } from "react"
-import InputField from "./InputField"
-import ErrorMessage from "./ErrorMessage"
+import React, { FormEvent } from 'react'
+
+import ErrorMessage from './ErrorMessage'
+import InputField from './InputField'
 
 type AuthFormProps = {
   email: string
@@ -19,7 +20,7 @@ function AuthForm({
   setPassword,
   error,
   handleSubmit,
-  submitButtonText = "Login",
+  submitButtonText = 'Login',
 }: AuthFormProps) {
   return (
     <form

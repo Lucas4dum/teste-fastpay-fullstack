@@ -1,18 +1,20 @@
-"use client"
-import { useState } from "react"
-import Link from "next/link"
-import { AxiosError } from "axios"
-import { api } from "~/lib/axios"
-import { useRouter } from "next/navigation"
-import AuthForm from "../../../components/AuthForm"
-import { useUser } from "~/store/user"
+'use client'
+import { AxiosError } from 'axios'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+
+import { api } from '~/lib/axios'
+import { useUser } from '~/store/user'
+
+import AuthForm from '../../../components/AuthForm'
 
 export default function Signup() {
-  const { singIn } = useUser()
+  const { signIn } = useUser()
   const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
   function validatePassword(password: string): string | null {
     const minLength = 6
@@ -21,11 +23,11 @@ export default function Signup() {
     const hasNumber = /[0-9]/.test(password)
 
     if (password.length < minLength) {
-      return "A senha deve ter no mínimo 6 caracteres."
+      return 'A senha deve ter no mínimo 6 caracteres.'
     }
 
     if (!hasUpperCase || !hasLowerCase || !hasNumber) {
-      return "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula e  um número."
+      return 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula e  um número.'
     }
 
     return null
@@ -33,7 +35,7 @@ export default function Signup() {
 
   async function handleSignup(event: React.FormEvent) {
     event.preventDefault()
-    setError("")
+    setError('')
 
     const passwordError = validatePassword(password)
     if (passwordError) {
@@ -43,27 +45,24 @@ export default function Signup() {
 
     try {
       const response = await api.post(`/user`, { email, password })
-      console.log("Conta criada com sucesso:", response.data)
 
-      // Realiza o login automático após criar a conta
-      singIn({
-        email: email,
+      signIn({
+        email,
         access_token: response.data.access_token,
       })
 
-      // Redireciona para a página de dashboard
-      router.push("/dashboard")
+      router.push('/dashboard')
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         if (error.response.status === 409) {
-          setError("Usuário já existe. Tente fazer login.")
+          setError('Usuário já existe. Tente fazer login.')
         } else if (error.response.status === 400) {
           setError(
-            "Não foi possível criar a conta. Verifique os dados e tente novamente.",
+            'Não foi possível criar a conta. Verifique os dados e tente novamente.',
           )
         }
       } else {
-        console.error("Erro ao criar conta:", error)
+        console.error('Erro ao criar conta:', error)
       }
     }
   }

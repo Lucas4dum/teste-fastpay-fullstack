@@ -1,31 +1,37 @@
-import { create } from "zustand"
-import { persist, createJSONStorage } from "zustand/middleware"
+import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
-interface IUser {
+interface UserState {
   user: {
     email: string
     access_token: string
   }
-  singUp: () => void
-  singIn: (user: Partial<IUser["user"]>) => void
+  signUp: () => void
+  signIn: (user: Partial<UserState['user']>) => void
+  signOut: () => void
 }
 
 export const useUser = create(
-  persist<IUser>(
+  persist<UserState>(
     (set, get) => ({
       user: {
-        email: "",
-        access_token: "",
+        email: '',
+        access_token: '',
       },
-      singUp: () => {
+      signUp: () => {
         set({
           user: {
-            email: "",
-            access_token: "",
+            email: '',
+            access_token: '',
           },
         })
       },
-      singIn: (user) => {
+      signIn: (user) => {
+        if (user?.access_token) {
+          console.log('Setting token in localStorage:', user.access_token)
+          localStorage.setItem('token', user.access_token)
+        }
+
         set({
           user: {
             ...get().user,
@@ -33,10 +39,22 @@ export const useUser = create(
           },
         })
       },
+      signOut: () => {
+        console.log('Clearing storage')
+        localStorage.clear()
+        sessionStorage.clear()
+
+        set({
+          user: {
+            email: '',
+            access_token: '',
+          },
+        })
+      },
     }),
     {
-      name: "user-storage",
-      storage: createJSONStorage(() => sessionStorage),
+      name: 'user-storage',
+      storage: createJSONStorage(() => localStorage), // Usar localStorage
     },
   ),
 )

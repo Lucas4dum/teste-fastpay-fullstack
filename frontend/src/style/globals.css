@@ -4,6 +4,11 @@
   --bg-input: #121214;
   --text-secondary: #939393;
   --bg-button: #0765df;
+  --bg-card: #323238;
+  --bg-card-blue: #074d8e;
+  --body-color: #202024;
+  --bg-body-color-secondary: #121214;
+  --bg-body-color-tertiary: #29292e;
 }
 
 /* Tailwind CSS base styles */
