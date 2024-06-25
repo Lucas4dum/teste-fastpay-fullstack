@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { Env } from 'src/env';
 import { AuthenticateController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { AuthService } from './serivces/auth.service';
+import { AuthService } from './services/auth.service';
 
 @Global()
 @Module({

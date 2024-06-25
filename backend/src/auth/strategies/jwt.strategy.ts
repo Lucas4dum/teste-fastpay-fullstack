@@ -6,7 +6,7 @@ import { Env } from 'src/env';
 import { z } from 'zod';
 
 const tokenSchema = z.object({
-  sub: z.string().uuid(),
+  id: z.string().uuid(),
 });
 
 export type UserPayload = z.infer<typeof tokenSchema>;

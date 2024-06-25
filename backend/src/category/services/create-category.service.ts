@@ -13,6 +13,7 @@ export class CreateCategoryService {
           contains: `%${data.name}%`,
           mode: 'insensitive',
         },
+        userId: data.userId,
       },
     });
     if (category) {

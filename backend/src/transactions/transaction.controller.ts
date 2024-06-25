@@ -19,14 +19,14 @@ import { Response } from 'express';
 import { CreateTransactionDTO } from './dtos/create-transaction.dto';
 import { CreateTransactionService } from './services/create-transaction.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/auth/current-user.decorator';
 import { UserPayload } from 'src/auth/strategies/jwt.strategy';
 import { ListTransactionsService } from './services/list-transaction.service';
-import { TransactionSwaggerDecorators } from './swagger-decorators/transaction.swagger';
+import { TransactionSwaggerDecorators } from './decorators/transaction.swagger.decorator';
 import { ListTransactionsByCategoryService } from './services/list-transactions-by-category.service';
 import { UpdateTransactionService } from './services/update-transaction.service';
 import { UpdateTransactionDTO } from './dtos/update-transaction.dto';
 import { DeleteTransactionService } from './services/delete-transaction.service';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('transaction')
 @UseGuards(JwtAuthGuard)
@@ -47,9 +47,7 @@ export class TransactionController {
     data: CreateTransactionDTO,
     @Res() res: Response,
   ): Promise<Response> {
-    const userId: string = user.sub as string;
-
-    await this.createService.create({ ...data, userId });
+    await this.createService.create({ ...data, userId: user.id });
 
     return res
       .status(HttpStatus.CREATED)
@@ -62,7 +60,7 @@ export class TransactionController {
     @CurrentUser() user: UserPayload,
     @Res() res: Response,
   ): Promise<Response> {
-    const userId: string = user.sub as string;
+    const userId: string = user.id as string;
 
     const transactions = await this.listTransactionsService.list(userId);
 
@@ -76,9 +74,8 @@ export class TransactionController {
     @Param('categoryId') categoryId: string,
     @Res() res: Response,
   ): Promise<Response> {
-    const userId: string = user.sub as string;
     const transactions = await this.listTransactionsByCategoryService.list({
-      userId,
+      userId: user.id,
       categoryId,
     });
 
