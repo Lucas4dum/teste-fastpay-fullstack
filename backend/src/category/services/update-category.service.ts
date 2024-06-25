@@ -6,7 +6,7 @@ import { UpdateCategoryDTO } from '../dtos/update-category.dto';
 export class UpdateCategoryService {
   constructor(private prisma: PrismaService) {}
 
-  async update({ id, name }: UpdateCategoryDTO): Promise<void> {
+  async update({ id, name, userId }: UpdateCategoryDTO): Promise<void> {
     let category = await this.prisma.category.findUnique({
       where: { id },
     });
@@ -20,6 +20,7 @@ export class UpdateCategoryService {
           contains: `%${name}%`,
           mode: 'insensitive',
         },
+        userId: userId,
       },
     });
     if (category) {

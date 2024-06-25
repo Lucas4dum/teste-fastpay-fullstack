@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma, Category } from '@prisma/client';
 
 @Injectable()
 export class ListSummaryOfTransactionsByCategoryService {

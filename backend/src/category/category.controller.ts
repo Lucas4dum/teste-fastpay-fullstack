@@ -16,15 +16,16 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/auth/current-user.decorator';
+
 import { UserPayload } from 'src/auth/strategies/jwt.strategy';
 import { CreateCategoryService } from './services/create-category.service';
 import { CreateCategoryDTO } from './dtos/create-category.dto';
-import { CategoryControllerSwaggerDecorators } from './swagger-decorators/category.swagger';
+import { CategoryControllerSwaggerDecorators } from './decorators/category.swagger.decorator';
 import { ListCategoriesService } from './services/list-categories.service';
 import { UpdateCategoryService } from './services/update-category.service';
 import { DeleteCategoryService } from './services/delete-category.service';
 import { ListSummaryOfTransactionsByCategoryService } from './services/list-summary-of-transactions-by-category.service';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('category')
 @UseGuards(JwtAuthGuard)
@@ -46,13 +47,9 @@ export class CategoryController {
     data: CreateCategoryDTO,
     @Res() res: Response,
   ): Promise<Response> {
-    const userId: string = user.sub as string;
+    await this.createService.create({ ...data, userId: user.id });
 
-    await this.createService.create({ ...data, userId });
-
-    return res
-      .status(HttpStatus.CREATED)
-      .json('Category created successfully.');
+    return res.status(HttpStatus.CREATED).json();
   }
 
   @CategoryControllerSwaggerDecorators.ListCategories()
@@ -61,7 +58,7 @@ export class CategoryController {
     @CurrentUser() user: UserPayload,
     @Res() res: Response,
   ): Promise<Response> {
-    const userId: string = user.sub as string;
+    const userId: string = user.id as string;
 
     const categories = await this.listCategoriesService.list(userId);
 
@@ -71,13 +68,18 @@ export class CategoryController {
   @CategoryControllerSwaggerDecorators.UpdateCategory()
   @Put('/:id')
   async update(
+    @CurrentUser() user: UserPayload,
     @Body() data: { name: string },
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<Response> {
-    await this.updateCategoryService.update({ id, name: data.name });
+    await this.updateCategoryService.update({
+      id,
+      name: data.name,
+      userId: user.id,
+    });
 
-    return res.status(HttpStatus.OK).json('Category updated successfully.');
+    return res.status(HttpStatus.OK).json();
   }
 
   @CategoryControllerSwaggerDecorators.DeleteCategory()
@@ -88,7 +90,7 @@ export class CategoryController {
   ): Promise<Response> {
     await this.deleteCategoryService.delete(id);
 
-    return res.status(HttpStatus.OK).json('Transaction deleted successfully.');
+    return res.status(HttpStatus.OK).json();
   }
 
   @CategoryControllerSwaggerDecorators.FindOneCategory()

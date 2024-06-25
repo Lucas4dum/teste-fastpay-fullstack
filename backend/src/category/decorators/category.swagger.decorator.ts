@@ -41,34 +41,19 @@ export class CategoryControllerSwaggerDecorators {
       ApiOperation({
         summary: 'Cadastrar categoria.',
         description:
-          'Rota utilizada para criar categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*name: string\n\n',
+          'Rota utilizada para criar categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*name: string - **"Nome da categoria não deve se repetir"**\n\n',
       }),
       ApiBody({
         schema: {
           type: 'object',
           properties: {
-            description: {
+            name: {
               type: 'string',
-              example: 'Grocery shopping',
-              description: 'Description of the transaction',
-            },
-            amount: {
-              type: 'number',
-              example: 100.0,
-              description: 'Amount of the transaction',
-            },
-            date: {
-              type: 'string',
-              example: '2023-06-18',
-              description: 'Date of the transaction in YYYY-MM-DD format',
-            },
-            categoryId: {
-              type: 'string',
-              example: '550e8400-e29b-41d4-a716-446655440000',
-              description: 'UUID of the category the transaction belongs to',
+              example: 'Categoria teste',
+              description: 'Descrição de uma categoria',
             },
           },
-          required: ['description', 'amount', 'date', 'categoryId'],
+          required: ['name'],
         },
       }),
       //configurações do swagger
@@ -78,7 +63,7 @@ export class CategoryControllerSwaggerDecorators {
         status: 201,
         description: 'Category created successfully.',
       }),
-      ApiResponse({ status: 400, description: 'Error creating category!.' }),
+      ApiResponse({ status: 400, description: 'Error creating category!' }),
       ApiResponse({ status: 401, description: 'Unauthorized.' }),
       ApiResponse({
         status: 409,
@@ -92,7 +77,7 @@ export class CategoryControllerSwaggerDecorators {
       ApiOperation({
         summary: 'Atualizar categoria.',
         description:
-          'Rota utilizada para atualizar uma categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n<b>CAMPOS OPCIONAIS</b>\n\name: string\n\n',
+          'Rota utilizada para atualizar uma categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n*name: string\n\n',
       }),
       ApiParam({
         name: 'id',
@@ -109,10 +94,11 @@ export class CategoryControllerSwaggerDecorators {
           properties: {
             name: {
               type: 'string',
-              example: 'teste2',
+              example: 'Categoria teste',
+              description: 'Descrição de uma categoria',
             },
           },
-          required: ['description', 'amount', 'date', 'categoryId'],
+          required: ['name'],
         },
       }),
       ApiResponse({
@@ -172,10 +158,10 @@ export class CategoryControllerSwaggerDecorators {
       ApiResponse({
         status: 200,
         schema: {
-          type: 'array',
+          type: 'object',
           example: {
             category: {
-              name: 'Comida',
+              name: 'Categoria teste',
               amount: 100,
             },
           },

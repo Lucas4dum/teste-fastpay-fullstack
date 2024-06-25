@@ -30,7 +30,7 @@ export class AuthService {
       throw new UnauthorizedException('User crendentials do not match.');
     }
 
-    const accessToken = this.jwt.sign({ sub: user.id });
+    const accessToken = this.jwt.sign({ id: user.id });
 
     return accessToken;
   }

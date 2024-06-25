@@ -3,15 +3,13 @@ import { IsEmail, IsNotEmpty, IsStrongPassword } from 'class-validator';
 
 export class CreateUserDTO {
   @ApiProperty({
-    example: 'lucasadum@gmail.com',
-    description: 'field pattern example@example.com',
     required: true,
   })
   @IsEmail({}, { message: "The 'email' field must be in email format." })
   @IsNotEmpty({ message: "The 'email' field cannot be empty." })
   email!: string;
 
-  @ApiProperty({ example: '1Ma345', description: '', required: true })
+  @ApiProperty({})
   @IsStrongPassword(
     {
       minLength: 6,

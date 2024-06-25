@@ -3,8 +3,6 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateSessionDTO {
   @ApiProperty({
-    example: 'lucasadum@gmail.com',
-    description: 'User email address',
     required: true,
   })
   @IsEmail({}, { message: "The 'email' field must be in email format." })
@@ -12,8 +10,6 @@ export class CreateSessionDTO {
   email!: string;
 
   @ApiProperty({
-    example: '1Ma345',
-    description: 'User password',
     required: true,
   })
   @IsNotEmpty({ message: "The 'password' field cannot be empty." })
