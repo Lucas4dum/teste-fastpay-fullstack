@@ -43,13 +43,13 @@ export const useUser = create(
         console.log('Clearing storage')
         localStorage.clear()
         sessionStorage.clear()
-
         set({
           user: {
             email: '',
             access_token: '',
           },
         })
+        window.location.reload()
       },
     }),
     {

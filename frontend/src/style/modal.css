@@ -68,6 +68,14 @@ select {
   background-color: #0552b5;
 }
 
+.Button.red {
+  background-color: #a02e2e;
+  color: white;
+}
+.Button.red:hover {
+  background-color: #ab303d;
+}
+
 .IconButton {
   font-family: inherit;
   border-radius: 100%;

@@ -15,7 +15,9 @@ interface IModalProps {
   triggerText: string
   triggerClassName: string
   inputs: { label: string; id: string; defaultValue?: string }[]
-  buttons: { label: string; onClick: (data: any) => void }[]
+  buttons: { label: string; onClick: (data: any) => void; className?: string }[]
+  isOpen: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 const Modal: React.FC<IModalProps> = ({
@@ -24,10 +26,11 @@ const Modal: React.FC<IModalProps> = ({
   triggerClassName,
   inputs,
   buttons,
+  isOpen,
+  onOpenChange,
 }) => {
   const [formData, setFormData] = useState<FormData>({})
   const [categories, setCategories] = useState<ICategory[]>([])
-  const [isOpen, setIsOpen] = useState(false)
 
   const fetchCategories = async () => {
     const categories = await listCategories()
@@ -35,7 +38,11 @@ const Modal: React.FC<IModalProps> = ({
   }
 
   useEffect(() => {
-    if (title === 'Nova Transação' && isOpen) {
+    if (
+      (title === 'Nova Transação' ||
+        title === 'Alterar ou Excluir Transação') &&
+      isOpen
+    ) {
       fetchCategories()
     }
   }, [title, isOpen])
@@ -47,12 +54,12 @@ const Modal: React.FC<IModalProps> = ({
     setFormData({ ...formData, [id]: value })
   }
 
-  const handleSubmit = () => {
-    buttons[0].onClick(formData)
+  const handleSubmit = (onClick: (data: any) => void) => {
+    onClick(formData)
   }
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Trigger asChild>
         <button className={triggerClassName}>{triggerText}</button>
       </Dialog.Trigger>
@@ -96,9 +103,15 @@ const Modal: React.FC<IModalProps> = ({
               justifyContent: 'flex-end',
             }}
           >
-            <button className="Button blue" onClick={handleSubmit}>
-              {buttons[0].label}
-            </button>
+            {buttons.map((button, index) => (
+              <button
+                key={index}
+                className={`Button ${button.className || 'blue'}`}
+                onClick={() => handleSubmit(button.onClick)}
+              >
+                {button.label}
+              </button>
+            ))}
           </div>
           <Dialog.Close asChild>
             <button className="IconButton" aria-label="Close">

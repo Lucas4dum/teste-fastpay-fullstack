@@ -10,12 +10,15 @@ import {
 import { PiSignOutBold } from 'react-icons/pi'
 
 import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table'
+import ITransaction from '~/interfaces/Itransaction'
 import ITransactionSummary from '~/interfaces/Itransaction-summary'
 import { createCategory } from '~/services/functions/category'
 import {
   createTransaction,
+  deleteTransaction,
   ITransactionDataForm,
   listTransactions,
+  updateTransaction,
 } from '~/services/functions/transaction'
 import { useUser } from '~/store/user'
 
@@ -24,8 +27,13 @@ import Modal from './components/modal'
 import { MoneyLabel } from './components/moneyLabel'
 
 export default function Dashboard() {
+  const [isCategoryModalOpen, setCategoryModalOpen] = useState(false)
+  const [isTransactionModalOpen, setTransactionModalOpen] = useState(false)
+
   const { signOut } = useUser()
   const [fieldsTransaction, setTransactions] = useState<ITransactionSummary>()
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<ITransaction | null>(null)
 
   const fetchTransactions = async () => {
     const transactionsSummary = await listTransactions()
@@ -34,10 +42,28 @@ export default function Dashboard() {
 
   const createTransactionUpdated = async (data: ITransactionDataForm) => {
     try {
-      createTransaction(data)
-      fetchTransactions()
+      await createTransaction(data)
+      await fetchTransactions()
     } catch (error) {
-      console.error('Error fetching transactions:', error)
+      console.error('Error creating transaction:', error)
+    }
+  }
+
+  const updateTransactionUpdated = async (data: ITransactionDataForm) => {
+    try {
+      await updateTransaction(data)
+      await fetchTransactions()
+    } catch (error) {
+      console.error('Error updating transaction:', error)
+    }
+  }
+
+  const deleteTransactionUpdated = async (id: string) => {
+    try {
+      await deleteTransaction(id)
+      await fetchTransactions()
+    } catch (error) {
+      console.error('Error deleting transaction:', error)
     }
   }
 
@@ -90,7 +116,10 @@ export default function Dashboard() {
                     onClick: (data) => createCategory(data),
                   },
                 ]}
+                isOpen={isCategoryModalOpen}
+                onOpenChange={setCategoryModalOpen}
               />
+
               <Modal
                 title="Nova Transação"
                 triggerText="Nova Transação"
@@ -106,6 +135,8 @@ export default function Dashboard() {
                     onClick: (data) => createTransactionUpdated(data),
                   },
                 ]}
+                isOpen={isTransactionModalOpen}
+                onOpenChange={setTransactionModalOpen}
               />
 
               <button
@@ -148,7 +179,8 @@ export default function Dashboard() {
             {fieldsTransaction?.transactions.map((transaction) => (
               <TableRow
                 key={transaction.id}
-                className="rounded-lg bg-bodyColorTertiary"
+                className="cursor-pointer rounded-lg bg-bodyColorTertiary"
+                onClick={() => setSelectedTransaction(transaction)}
               >
                 <TableCell className="rounded-l-lg">
                   <div className="p-4 text-white">
@@ -160,7 +192,6 @@ export default function Dashboard() {
                     <MoneyLabel value={transaction.amount} />
                   </div>
                 </TableCell>
-
                 <TableCell>
                   <div className="p-4 text-white">
                     {transaction.categoryName}
@@ -181,7 +212,11 @@ export default function Dashboard() {
       <div className="w-full max-w-[80%] md:hidden">
         <div className="w-full space-y-4">
           {fieldsTransaction?.transactions.map((transaction) => (
-            <div key={transaction.id} className="w-full rounded-lg border p-4">
+            <div
+              key={transaction.id}
+              className="w-full cursor-pointer rounded-lg border p-4"
+              onClick={() => setSelectedTransaction(transaction)}
+            >
               <div className="mb-2 flex w-full justify-between">
                 <span>{transaction.description}</span>
               </div>
@@ -200,6 +235,54 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      {selectedTransaction && (
+        <Modal
+          title="Alterar ou Excluir Transação"
+          triggerText="Alterar ou Excluir Transação"
+          triggerClassName="hidden"
+          inputs={[
+            {
+              label: 'Descrição',
+              id: 'description',
+              defaultValue: selectedTransaction.description,
+            },
+            {
+              label: 'Preço',
+              id: 'price',
+              defaultValue: String(selectedTransaction.amount),
+            },
+            {
+              label: 'Categoria',
+              id: 'category',
+              defaultValue: selectedTransaction.categoryId,
+            },
+          ]}
+          buttons={[
+            {
+              label: 'Alterar Transação',
+              onClick: (data) =>
+                updateTransactionUpdated({
+                  ...data,
+                  id: selectedTransaction.id,
+                }),
+              className: 'blue',
+            },
+            {
+              label: 'Excluir Transação',
+              onClick: () => {
+                deleteTransactionUpdated(selectedTransaction.id)
+                setSelectedTransaction(null)
+              },
+              className: 'red',
+            },
+          ]}
+          isOpen={!!selectedTransaction}
+          onOpenChange={(open) => {
+            if (!open) setSelectedTransaction(null)
+          }}
+        />
+      )}
     </div>
   )
 }

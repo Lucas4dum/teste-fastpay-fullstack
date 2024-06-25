@@ -2,6 +2,7 @@ import ITransactionSummary from '~/interfaces/Itransaction-summary'
 import { api } from '~/libs/axios'
 
 export interface ITransactionDataForm {
+  id?: string
   description?: string
   price?: string
   category?: string
@@ -53,19 +54,17 @@ export const createTransaction = async (data: ITransactionDataForm) => {
 }
 
 // Atualizar uma transação por ID
-export const updateTransaction = async (
-  id: string,
-  data: ITransactionDataForm,
-) => {
+export const updateTransaction = async (data: ITransactionDataForm) => {
   try {
+    const { id, description, price, category } = data
     await api.put(`/transaction/${id}`, {
-      description: data.description,
-      amount: parseFloat(data.price!),
-      categoryId: data.category,
+      description,
+      amount: parseFloat(price!),
+      categoryId: category,
     })
     console.log(`Transação com id ${id} atualizada com sucesso`)
   } catch (error) {
-    console.error(`Error updating transaction with id ${id}:`, error)
+    console.error(`Error updating transaction with id ${data.id}:`, error)
     throw error
   }
 }
