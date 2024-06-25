@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import React, { createContext, ReactNode, useEffect, useState } from 'react'
+import React, { createContext, ReactNode, useState } from 'react'
 
 import { api } from '~/libs/axios'
 import { useUser } from '~/store/user'

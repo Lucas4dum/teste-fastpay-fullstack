@@ -10,31 +10,32 @@ import {
 import { PiSignOutBold } from 'react-icons/pi'
 
 import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table'
-import { api } from '~/libs/axios'
+import ITransactionSummary from '~/interfaces/Itransaction-summary'
+import { createCategory } from '~/services/functions/category'
+import {
+  createTransaction,
+  ITransactionDataForm,
+  listTransactions,
+} from '~/services/functions/transaction'
+import { useUser } from '~/store/user'
 
 import { Card } from './components/card'
 import Modal from './components/modal'
 import { MoneyLabel } from './components/moneyLabel'
 
-interface Transaction {
-  id: string
-  description: string
-  amount: number
-  date: string
-  categoryId: string
-  categoryName: string
-  userId: string
-  createdAt: string
-  updatedAt: string
-}
-
 export default function Dashboard() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const { signOut } = useUser()
+  const [fieldsTransaction, setTransactions] = useState<ITransactionSummary>()
 
   const fetchTransactions = async () => {
+    const transactionsSummary = await listTransactions()
+    setTransactions(transactionsSummary)
+  }
+
+  const createTransactionUpdated = async (data: ITransactionDataForm) => {
     try {
-      const response = await api.get('/transaction')
-      setTransactions(response.data.transactions)
+      createTransaction(data)
+      fetchTransactions()
     } catch (error) {
       console.error('Error fetching transactions:', error)
     }
@@ -43,21 +44,17 @@ export default function Dashboard() {
   const cards = [
     {
       title: 'Entradas',
-      value: transactions
-        .filter((t) => t.amount > 0)
-        .reduce((sum, t) => sum + t.amount, 0),
+      value: fieldsTransaction?.income ? fieldsTransaction?.income : 0,
       icon: <MdOutlineArrowCircleUp className="text-blue-500" size={24} />,
     },
     {
       title: 'Saídas',
-      value: transactions
-        .filter((t) => t.amount < 0)
-        .reduce((sum, t) => sum + t.amount, 0),
+      value: fieldsTransaction?.expenses ? fieldsTransaction?.expenses : 0,
       icon: <MdOutlineArrowCircleDown className="text-red-500" size={24} />,
     },
     {
       title: 'Total',
-      value: transactions.reduce((sum, t) => sum + t.amount, 0),
+      value: fieldsTransaction?.total ? fieldsTransaction?.total : 0,
       icon: <MdOutlineAttachMoney className="text-white" size={24} />,
       bgColor: 'bg-cardBlue',
     },
@@ -90,12 +87,10 @@ export default function Dashboard() {
                 buttons={[
                   {
                     label: 'Criar categoria',
-                    onClick: () => console.log('Alterar Categoria'),
+                    onClick: (data) => createCategory(data),
                   },
                 ]}
-                contentClassName="flex w-full flex-col gap-4 rounded-lg bg-secondary p-5 lg:p-8"
               />
-
               <Modal
                 title="Nova Transação"
                 triggerText="Nova Transação"
@@ -108,13 +103,15 @@ export default function Dashboard() {
                 buttons={[
                   {
                     label: 'Criar Transação',
-                    onClick: () => console.log('Alterar Transação'),
+                    onClick: (data) => createTransactionUpdated(data),
                   },
                 ]}
-                contentClassName="flex w-full flex-col gap-4 rounded-lg bg-secondary p-5 lg:p-8"
               />
 
-              <button className="flex h-full items-center justify-center rounded-sm bg-bodyColorTertiary p-3 text-sm font-semibold text-white">
+              <button
+                className="flex h-full items-center justify-center rounded-sm bg-bodyColorTertiary p-3 text-sm font-semibold text-white"
+                onClick={signOut}
+              >
                 <PiSignOutBold size={20} />
               </button>
             </div>
@@ -148,7 +145,7 @@ export default function Dashboard() {
       <div className="hidden w-full max-w-[80%] overflow-x-auto md:block">
         <Table className="w-full border-separate border-spacing-y-4 rounded-md">
           <TableBody>
-            {transactions.map((transaction) => (
+            {fieldsTransaction?.transactions.map((transaction) => (
               <TableRow
                 key={transaction.id}
                 className="rounded-lg bg-bodyColorTertiary"
@@ -183,7 +180,7 @@ export default function Dashboard() {
       {/* MOBILE */}
       <div className="w-full max-w-[80%] md:hidden">
         <div className="w-full space-y-4">
-          {transactions.map((transaction) => (
+          {fieldsTransaction?.transactions.map((transaction) => (
             <div key={transaction.id} className="w-full rounded-lg border p-4">
               <div className="mb-2 flex w-full justify-between">
                 <span>{transaction.description}</span>

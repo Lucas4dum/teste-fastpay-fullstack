@@ -3,14 +3,14 @@ import '~/style/modal.css'
 import * as Dialog from '@radix-ui/react-dialog'
 import React, { useEffect, useState } from 'react'
 
-import { api } from '~/libs/axios'
+import ICategory from '~/interfaces/Icategory'
+import { listCategories } from '~/services/functions/category'
 
-interface Category {
-  id: string
-  name: string
+interface FormData {
+  [key: string]: string
 }
 
-interface ModalProps {
+interface IModalProps {
   title: string
   triggerText: string
   triggerClassName: string
@@ -18,42 +18,27 @@ interface ModalProps {
   buttons: { label: string; onClick: (data: any) => void }[]
 }
 
-interface FormData {
-  [key: string]: string
-}
-
-const Modal: React.FC<ModalProps> = ({
+const Modal: React.FC<IModalProps> = ({
   title,
   triggerText,
   triggerClassName,
   inputs,
   buttons,
 }) => {
-  const [categories, setCategories] = useState<Category[]>([])
   const [formData, setFormData] = useState<FormData>({})
-
-  useEffect(() => {
-    if (title === 'Nova Transação') {
-      fetchCategories()
-    }
-  }, [title])
+  const [categories, setCategories] = useState<ICategory[]>([])
+  const [isOpen, setIsOpen] = useState(false)
 
   const fetchCategories = async () => {
-    const token = sessionStorage.getItem('user-storage')
-    if (token) {
-      const parsedToken = JSON.parse(token)
-      try {
-        const response = await api.get('/category', {
-          headers: {
-            Authorization: `Bearer ${parsedToken.access_token}`,
-          },
-        })
-        setCategories(response.data.categories)
-      } catch (error) {
-        console.error('Error fetching categories:', error)
-      }
-    }
+    const categories = await listCategories()
+    setCategories(categories)
   }
+
+  useEffect(() => {
+    if (title === 'Nova Transação' && isOpen) {
+      fetchCategories()
+    }
+  }, [title, isOpen])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -67,7 +52,7 @@ const Modal: React.FC<ModalProps> = ({
   }
 
   return (
-    <Dialog.Root>
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>
         <button className={triggerClassName}>{triggerText}</button>
       </Dialog.Trigger>
