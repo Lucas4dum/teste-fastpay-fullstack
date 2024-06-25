@@ -10,9 +10,10 @@ import {
 import { PiSignOutBold } from 'react-icons/pi'
 
 import { Table, TableBody, TableCell, TableRow } from '~/components/ui/table'
-import { api } from '~/lib/axios'
+import { api } from '~/libs/axios'
 
 import { Card } from './components/card'
+import Modal from './components/modal'
 import { MoneyLabel } from './components/moneyLabel'
 
 interface Transaction {
@@ -81,13 +82,37 @@ export default function Dashboard() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="flex items-center justify-center rounded-sm bg-blue-600 px-4 py-3 text-sm font-semibold text-white">
-                Nova Categoria
-              </button>
+              <Modal
+                title="Nova Categoria"
+                triggerText="Nova Categoria"
+                triggerClassName="flex items-center justify-center rounded-sm bg-blue-600 px-4 py-3 text-sm font-semibold text-white"
+                inputs={[{ label: 'Nome', id: 'categoryName' }]}
+                buttons={[
+                  {
+                    label: 'Criar categoria',
+                    onClick: () => console.log('Alterar Categoria'),
+                  },
+                ]}
+                contentClassName="flex w-full flex-col gap-4 rounded-lg bg-secondary p-5 lg:p-8"
+              />
 
-              <button className="flex items-center justify-center rounded-sm bg-blue-600 px-4 py-3 text-sm font-semibold text-white">
-                Nova Transação
-              </button>
+              <Modal
+                title="Nova Transação"
+                triggerText="Nova Transação"
+                triggerClassName="flex items-center justify-center rounded-sm bg-blue-600 px-4 py-3 text-sm font-semibold text-white"
+                inputs={[
+                  { label: 'Descrição', id: 'description' },
+                  { label: 'Preço', id: 'price' },
+                  { label: 'Categoria', id: 'category' },
+                ]}
+                buttons={[
+                  {
+                    label: 'Criar Transação',
+                    onClick: () => console.log('Alterar Transação'),
+                  },
+                ]}
+                contentClassName="flex w-full flex-col gap-4 rounded-lg bg-secondary p-5 lg:p-8"
+              />
 
               <button className="flex h-full items-center justify-center rounded-sm bg-bodyColorTertiary p-3 text-sm font-semibold text-white">
                 <PiSignOutBold size={20} />

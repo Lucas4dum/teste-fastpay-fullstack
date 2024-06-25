@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { api } from '~/lib/axios'
+import { api } from '~/libs/axios'
 import { useUser } from '~/store/user'
 
 export default function SignIn() {

@@ -4,10 +4,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { api } from '~/lib/axios'
+import AuthForm from '~/components/AuthForm'
+import { api } from '~/libs/axios'
 import { useUser } from '~/store/user'
-
-import AuthForm from '../../../components/AuthForm'
 
 export default function Signup() {
   const { signIn } = useUser()
