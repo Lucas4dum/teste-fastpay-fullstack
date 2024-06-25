@@ -20,9 +20,7 @@
 
 <!-- Body -->
 
-<h1>Backend</h1>
-
-## 👋 Tecnologias
+# 👋 Tecnologias
 
 Esse projeto foi desenvolvido com as seguintes tecnologias:
 
