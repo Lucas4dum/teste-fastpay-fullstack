@@ -49,9 +49,7 @@ export class TransactionController {
   ): Promise<Response> {
     await this.createService.create({ ...data, userId: user.id });
 
-    return res
-      .status(HttpStatus.CREATED)
-      .json('Transaction created successfully.');
+    return res.status(HttpStatus.CREATED).json();
   }
 
   @TransactionSwaggerDecorators.ListTransactions()
@@ -62,9 +60,12 @@ export class TransactionController {
   ): Promise<Response> {
     const userId: string = user.id as string;
 
-    const transactions = await this.listTransactionsService.list(userId);
+    const { transactions, expenses, income, total } =
+      await this.listTransactionsService.list(userId);
 
-    return res.status(HttpStatus.OK).send({ transactions });
+    return res
+      .status(HttpStatus.OK)
+      .send({ transactions, expenses, income, total });
   }
 
   @TransactionSwaggerDecorators.ListTransactionsByCategory()
@@ -99,7 +100,7 @@ export class TransactionController {
 
     await this.updateTransactionService.update({ ...data, id });
 
-    return res.status(HttpStatus.OK).json('Transaction updated successfully.');
+    return res.status(HttpStatus.OK).json();
   }
 
   @TransactionSwaggerDecorators.DeleteTransaction()
@@ -110,6 +111,6 @@ export class TransactionController {
   ): Promise<Response> {
     await this.deleteTransactionService.delete(id);
 
-    return res.status(HttpStatus.OK).json('Transaction deleted successfully.');
+    return res.status(HttpStatus.OK).json();
   }
 }

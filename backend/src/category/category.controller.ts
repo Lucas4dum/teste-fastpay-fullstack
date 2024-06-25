@@ -49,9 +49,7 @@ export class CategoryController {
   ): Promise<Response> {
     await this.createService.create({ ...data, userId: user.id });
 
-    return res
-      .status(HttpStatus.CREATED)
-      .json('Category created successfully.');
+    return res.status(HttpStatus.CREATED).json();
   }
 
   @CategoryControllerSwaggerDecorators.ListCategories()
@@ -81,7 +79,7 @@ export class CategoryController {
       userId: user.id,
     });
 
-    return res.status(HttpStatus.OK).json('Category updated successfully.');
+    return res.status(HttpStatus.OK).json();
   }
 
   @CategoryControllerSwaggerDecorators.DeleteCategory()
@@ -92,7 +90,7 @@ export class CategoryController {
   ): Promise<Response> {
     await this.deleteCategoryService.delete(id);
 
-    return res.status(HttpStatus.OK).json('Transaction deleted successfully.');
+    return res.status(HttpStatus.OK).json();
   }
 
   @CategoryControllerSwaggerDecorators.FindOneCategory()

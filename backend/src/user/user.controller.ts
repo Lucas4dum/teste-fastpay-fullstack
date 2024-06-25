@@ -18,8 +18,6 @@ export class UserController {
     @Res() res: Response,
   ): Promise<Response> {
     const access_token = await this.createService.create(data);
-    return res
-      .status(HttpStatus.CREATED)
-      .send({ message: 'User created successfully.', access_token });
+    return res.status(HttpStatus.CREATED).send({ access_token });
   }
 }
