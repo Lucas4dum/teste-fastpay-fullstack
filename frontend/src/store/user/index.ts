@@ -28,7 +28,6 @@ export const useUser = create(
       },
       signIn: (user) => {
         if (user?.access_token) {
-          console.log('Setting token in localStorage:', user.access_token)
           localStorage.setItem('token', user.access_token)
         }
 
@@ -40,7 +39,6 @@ export const useUser = create(
         })
       },
       signOut: () => {
-        console.log('Clearing storage')
         localStorage.clear()
         sessionStorage.clear()
         set({

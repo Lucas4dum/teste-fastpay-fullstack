@@ -21,7 +21,7 @@ export default function SignIn() {
     try {
       const response = await api.post(`/session`, { email, password })
       const token = response.data.access_token
-      console.log(token)
+
       signIn({
         email,
         access_token: token,

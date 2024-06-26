@@ -1,12 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UpdateCategoryDTO } from '../dtos/update-category.dto';
+
+interface IRequest {
+  id: string;
+  name: string;
+  userId: string;
+}
 
 @Injectable()
 export class UpdateCategoryService {
   constructor(private prisma: PrismaService) {}
 
-  async update({ id, name, userId }: UpdateCategoryDTO): Promise<void> {
+  async update({ id, name, userId }: IRequest): Promise<void> {
     let category = await this.prisma.category.findUnique({
       where: { id },
     });

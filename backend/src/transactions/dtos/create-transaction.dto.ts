@@ -27,6 +27,4 @@ export class CreateTransactionDTO {
   @IsUUID('4', { message: "The 'categoryId' field must be a valid UUID." })
   @IsNotEmpty({ message: "The 'categoryId' field cannot be empty." })
   categoryId!: string;
-
-  userId!: string;
 }

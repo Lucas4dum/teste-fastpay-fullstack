@@ -2,28 +2,64 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import ITransactionSummary from '../interfaces/Itransaction-summary';
 
+interface IRequest {
+  userId: string;
+  pageNumber: number;
+  pageSize: number;
+}
+
 @Injectable()
 export class ListTransactionsService {
   constructor(private prisma: PrismaService) {}
 
-  async list(userId: string): Promise<ITransactionSummary> {
-    const transactions = await this.prisma.transaction.findMany({
-      where: { userId },
-      include: {
-        category: true,
-      },
-    });
+  async list({
+    userId,
+    pageNumber,
+    pageSize,
+  }: IRequest): Promise<ITransactionSummary> {
+    const pages = (pageNumber === 1 ? pageNumber : pageNumber - 1) * pageSize;
 
-    let income = 0;
-    let expenses = 0;
+    const [transactions, totalTransactions, incomeResult, expensesResult] =
+      await Promise.all([
+        this.prisma.transaction.findMany({
+          where: { userId },
+          include: {
+            category: true,
+          },
+          skip: pageNumber === 1 ? 0 : pages,
+          take: pages,
+        }),
+        this.prisma.transaction.count({
+          where: { userId },
+        }),
+        this.prisma.transaction.aggregate({
+          _sum: {
+            amount: true,
+          },
+          where: {
+            userId,
+            amount: {
+              gt: 0,
+            },
+          },
+        }),
+        this.prisma.transaction.aggregate({
+          _sum: {
+            amount: true,
+          },
+          where: {
+            userId,
+            amount: {
+              lt: 0,
+            },
+          },
+        }),
+      ]);
+
+    const income = incomeResult._sum.amount || 0;
+    const expenses = expensesResult._sum.amount || 0;
 
     const formattedTransactions = transactions.map(transaction => {
-      if (transaction.amount > 0) {
-        income += transaction.amount;
-      } else {
-        expenses += transaction.amount;
-      }
-
       return {
         id: transaction.id,
         description: transaction.description,
@@ -38,12 +74,15 @@ export class ListTransactionsService {
     });
 
     const total = income + expenses;
+    const totalPages = Math.ceil(totalTransactions / pageSize);
 
     return {
       transactions: formattedTransactions,
       income,
       expenses,
       total,
+      totalPages,
+      currentPage: pageNumber,
     };
   }
 }

@@ -33,7 +33,6 @@ export const listCategoryById = async (id: string) => {
 export const createCategory = async (data: FormData) => {
   try {
     await api.post('/category', { name: data.categoryName })
-    console.log('Categoria criada com sucesso')
   } catch (error) {
     console.error('Error creating category:', error)
     throw error
@@ -44,7 +43,6 @@ export const createCategory = async (data: FormData) => {
 export const updateCategory = async (id: string, data: FormData) => {
   try {
     await api.put(`/category/${id}`, { name: data.categoryName })
-    console.log(`Categoria com id ${id} atualizada com sucesso`)
   } catch (error) {
     console.error(`Error updating category with id ${id}:`, error)
     throw error
@@ -55,7 +53,6 @@ export const updateCategory = async (id: string, data: FormData) => {
 export const deleteCategory = async (id: string) => {
   try {
     await api.delete(`/category/${id}`)
-    console.log(`Categoria com id ${id} deletada com sucesso`)
   } catch (error) {
     console.error(`Error deleting category with id ${id}:`, error)
     throw error

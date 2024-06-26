@@ -163,7 +163,7 @@ export default function Dashboard() {
       <div className="mb-6 flex w-full max-w-[80%] flex-row gap-4">
         <input
           type="text"
-          placeholder="Buscar por transação"
+          placeholder="Busque transações por uma categoria"
           className="w-full rounded-lg bg-bodyColorSecondary p-4 text-white outline-none"
         />
         <button className="flex items-center justify-center gap-4 rounded-lg border border-blue-600 bg-transparent p-4 text-blue-600">

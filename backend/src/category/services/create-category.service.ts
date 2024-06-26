@@ -1,19 +1,23 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCategoryDTO } from '../dtos/create-category.dto';
+
+interface IRequest {
+  userId: string;
+  name: string;
+}
 
 @Injectable()
 export class CreateCategoryService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateCategoryDTO): Promise<void> {
+  async create({ name, userId }: IRequest): Promise<void> {
     const category = await this.prisma.category.findFirst({
       where: {
         name: {
-          contains: `%${data.name}%`,
+          contains: `%${name}%`,
           mode: 'insensitive',
         },
-        userId: data.userId,
+        userId: userId,
       },
     });
     if (category) {
@@ -24,6 +28,7 @@ export class CreateCategoryService {
     }
 
     try {
+      const data = { name, userId };
       await this.prisma.category.create({ data });
     } catch (error) {
       throw new HttpException(

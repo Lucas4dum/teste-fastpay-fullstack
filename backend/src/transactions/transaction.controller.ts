@@ -10,6 +10,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
@@ -27,6 +28,7 @@ import { UpdateTransactionService } from './services/update-transaction.service'
 import { UpdateTransactionDTO } from './dtos/update-transaction.dto';
 import { DeleteTransactionService } from './services/delete-transaction.service';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { ListTransactionsDTO } from './dtos/list-transactions.dto.service';
 
 @Controller('transaction')
 @UseGuards(JwtAuthGuard)
@@ -55,32 +57,43 @@ export class TransactionController {
   @TransactionSwaggerDecorators.ListTransactions()
   @Get()
   async list(
+    @Query() data: ListTransactionsDTO,
     @CurrentUser() user: UserPayload,
     @Res() res: Response,
   ): Promise<Response> {
-    const userId: string = user.id as string;
+    const pageNumber = parseInt(data.page || '1', 10);
+    const pageSize = parseInt(data.size || '7', 10);
 
-    const { transactions, expenses, income, total } =
-      await this.listTransactionsService.list(userId);
+    const transactionsData = await this.listTransactionsService.list({
+      userId: user.id,
+      pageNumber,
+      pageSize,
+    });
 
-    return res
-      .status(HttpStatus.OK)
-      .send({ transactions, expenses, income, total });
+    return res.status(HttpStatus.OK).send({
+      ...transactionsData,
+    });
   }
 
   @TransactionSwaggerDecorators.ListTransactionsByCategory()
-  @Get('by-category/:categoryId')
+  @Get('by-category/:name')
   async listByCategory(
     @CurrentUser() user: UserPayload,
-    @Param('categoryId') categoryId: string,
+    @Param('name') name: string,
+    @Query() data: ListTransactionsDTO,
     @Res() res: Response,
   ): Promise<Response> {
-    const transactions = await this.listTransactionsByCategoryService.list({
+    const pageSize = parseInt(data.size || '7', 10);
+    const pageNumber = parseInt(data.page || '1', 10);
+
+    const transactionsData = await this.listTransactionsByCategoryService.list({
       userId: user.id,
-      categoryId,
+      name,
+      pageNumber,
+      pageSize,
     });
 
-    return res.status(HttpStatus.OK).send({ transactions });
+    return res.status(HttpStatus.OK).send({ ...transactionsData });
   }
 
   @TransactionSwaggerDecorators.UpdateTransaction()

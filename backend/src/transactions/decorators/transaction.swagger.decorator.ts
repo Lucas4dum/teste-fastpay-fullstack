@@ -5,6 +5,7 @@ import {
   ApiResponse,
   ApiBody,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 
 export class TransactionSwaggerDecorators {
@@ -13,15 +14,29 @@ export class TransactionSwaggerDecorators {
       ApiOperation({
         summary: 'Listar transações por categoria',
         description:
-          'Rota utilizada para listar transações por categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*categoryId: string',
+          'Rota utilizada para listar transações por categoria.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*name: string\n\n<b>CAMPOS OPCIONAIS</b>\n\npage: string - "É uma string, mas passe apenas números inteiros"\n\nsize: string - "É uma string, mas passe apenas números inteiros"\n\n',
       }),
       ApiBearerAuth(), // Indica que a autenticação via Bearer Token
       ApiParam({
-        name: 'categoryId',
+        name: 'name',
         type: String,
         required: true,
-        description: 'formato UUID',
-        example: 'a4a37c4b-42dc-4db8-9d6e-4d3feedfae14',
+        description: 'Nome de uma categoria',
+        example: 'Comida',
+      }),
+      ApiQuery({
+        name: 'page',
+        type: String,
+        required: false,
+        description: 'Página em qual quer que retorne',
+        example: '1',
+      }),
+      ApiQuery({
+        name: 'size',
+        type: String,
+        required: false,
+        description: 'Nome de uma categoria',
+        example: '7',
       }),
       ApiResponse({
         status: 200,
@@ -44,6 +59,8 @@ export class TransactionSwaggerDecorators {
             income: 100,
             expenses: 0,
             total: 100,
+            currentPage: 1,
+            totalPages: 1,
           },
         },
       }),
@@ -55,9 +72,24 @@ export class TransactionSwaggerDecorators {
     return applyDecorators(
       ApiOperation({
         summary: 'Listar transações.',
-        description: 'Rota utilizada para listar transações.\n\n',
+        description:
+          'Rota utilizada para listar transações.\n\n<b>CAMPOS OPCIONAIS</b>\n\npage: string - "É uma string, mas passe apenas números inteiros"\n\nsize: string - "É uma string, mas passe apenas números inteiros"\n\n',
       }),
       ApiBearerAuth(), // Indica que a autenticação via Bearer Token
+      ApiQuery({
+        name: 'page',
+        type: String,
+        required: false,
+        description: 'Página em qual quer que retorne',
+        example: '1',
+      }),
+      ApiQuery({
+        name: 'size',
+        type: String,
+        required: false,
+        description: 'Nome de uma categoria',
+        example: '7',
+      }),
       ApiResponse({
         status: 200,
         schema: {
@@ -79,6 +111,8 @@ export class TransactionSwaggerDecorators {
             income: 100,
             expenses: 0,
             total: 100,
+            currentPage: 1,
+            totalPages: 2,
           },
         },
       }),

@@ -19,7 +19,7 @@ export class DeleteCategoryService {
     const transactions = await this.prisma.transaction.findMany({
       where: { categoryId: id },
     });
-    console.log(transactions);
+
     if (transactions.length !== 0) {
       throw new HttpException(
         'The specified category is associated with one or more transactions!',

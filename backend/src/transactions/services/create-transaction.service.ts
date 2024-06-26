@@ -1,15 +1,26 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateTransactionDTO } from '../dtos/create-transaction.dto';
 import ITransaction from 'src/interfaces/ITransaction';
-
+interface IRequest {
+  description: string;
+  amount: number;
+  date: string;
+  categoryId: string;
+  userId: string;
+}
 @Injectable()
 export class CreateTransactionService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateTransactionDTO): Promise<void> {
+  async create({
+    description,
+    amount,
+    date,
+    userId,
+    categoryId,
+  }: IRequest): Promise<void> {
     const category = await this.prisma.category.findUnique({
-      where: { id: data.categoryId },
+      where: { id: categoryId },
     });
     if (!category) {
       throw new HttpException(
@@ -20,12 +31,15 @@ export class CreateTransactionService {
 
     let correctedDate: string | undefined;
 
-    if (data.date && typeof data.date === 'string') {
-      correctedDate = this.correctDateFormat(data.date);
+    if (date && typeof date === 'string') {
+      correctedDate = this.correctDateFormat(date);
     }
 
     const transactionData: ITransaction = {
-      ...data,
+      description,
+      amount,
+      userId,
+      categoryId,
       date: correctedDate!,
     };
 

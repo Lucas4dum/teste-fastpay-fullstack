@@ -1,33 +1,85 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ListTransactionsByCategoryDTO } from '../dtos/list-transactions-by-category.dto';
 import ITransactionSummary from '../interfaces/Itransaction-summary';
+
+interface IRequest {
+  name: string;
+  userId: string;
+  pageNumber: number;
+  pageSize: number;
+}
 
 @Injectable()
 export class ListTransactionsByCategoryService {
   constructor(private prisma: PrismaService) {}
 
   async list({
+    name,
+    pageNumber,
+    pageSize,
     userId,
-    categoryId,
-  }: ListTransactionsByCategoryDTO): Promise<ITransactionSummary> {
-    const transactions = await this.prisma.transaction.findMany({
-      where: { userId, categoryId },
-      include: {
-        category: true,
+  }: IRequest): Promise<ITransactionSummary> {
+    const pages = (pageNumber === 1 ? pageNumber : pageNumber - 1) * pageSize;
+
+    const category = await this.prisma.category.findFirst({
+      where: {
+        name: {
+          contains: `${name}%`,
+          mode: 'insensitive',
+        },
       },
     });
+    console.log(category);
 
-    let income = 0;
-    let expenses = 0;
+    const [transactions, totalTransactions, incomeResult, expensesResult] =
+      await Promise.all([
+        this.prisma.transaction.findMany({
+          where: {
+            userId,
+            ...(category?.id !== undefined && { categoryId: category.id }),
+          },
+          include: {
+            category: true,
+          },
+          skip: pageNumber === 1 ? 0 : pages,
+          take: pages,
+        }),
+        this.prisma.transaction.count({
+          where: {
+            userId,
+            ...(category?.id !== undefined && { categoryId: category.id }),
+          },
+        }),
+        this.prisma.transaction.aggregate({
+          _sum: {
+            amount: true,
+          },
+          where: {
+            userId,
+            amount: {
+              gt: 0,
+            },
+            ...(category?.id !== undefined && { categoryId: category.id }),
+          },
+        }),
+        this.prisma.transaction.aggregate({
+          _sum: {
+            amount: true,
+          },
+          where: {
+            userId,
+            amount: {
+              lt: 0,
+            },
+            ...(category?.id !== undefined && { categoryId: category.id }),
+          },
+        }),
+      ]);
+
+    const income = incomeResult._sum.amount || 0;
+    const expenses = expensesResult._sum.amount || 0;
 
     const formattedTransactions = transactions.map(transaction => {
-      if (transaction.amount > 0) {
-        income += transaction.amount;
-      } else {
-        expenses += transaction.amount;
-      }
-
       return {
         id: transaction.id,
         description: transaction.description,
@@ -42,12 +94,15 @@ export class ListTransactionsByCategoryService {
     });
 
     const total = income + expenses;
+    const totalPages = Math.ceil(totalTransactions / pageSize);
 
     return {
       transactions: formattedTransactions,
       income,
       expenses,
       total,
+      totalPages,
+      currentPage: pageNumber,
     };
   }
 }

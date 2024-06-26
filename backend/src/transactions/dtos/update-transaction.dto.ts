@@ -27,6 +27,4 @@ export class UpdateTransactionDTO {
   @IsOptional()
   @IsUUID('4', { message: "The 'categoryId' field must be a valid UUID." })
   categoryId?: string;
-
-  id!: string;
 }

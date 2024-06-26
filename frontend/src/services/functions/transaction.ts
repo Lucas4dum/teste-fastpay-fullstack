@@ -46,7 +46,6 @@ export const createTransaction = async (data: ITransactionDataForm) => {
       date: new Date().toISOString().split('T')[0],
       categoryId: data.category,
     })
-    console.log('Transação criada com sucesso')
   } catch (error) {
     console.error('Error creating transaction:', error)
     throw error
@@ -62,7 +61,6 @@ export const updateTransaction = async (data: ITransactionDataForm) => {
       amount: parseFloat(price!),
       categoryId: category,
     })
-    console.log(`Transação com id ${id} atualizada com sucesso`)
   } catch (error) {
     console.error(`Error updating transaction with id ${data.id}:`, error)
     throw error
@@ -73,7 +71,6 @@ export const updateTransaction = async (data: ITransactionDataForm) => {
 export const deleteTransaction = async (id: string) => {
   try {
     await api.delete(`/transaction/${id}`)
-    console.log(`Transação com id ${id} deletada com sucesso`)
   } catch (error) {
     console.error(`Error deleting transaction with id ${id}:`, error)
     throw error

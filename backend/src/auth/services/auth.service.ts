@@ -1,9 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateSessionDTO } from '../dto/create-session.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { compare } from 'bcryptjs';
+
+interface IRequest {
+  email: string;
+  password: string;
+}
 @Injectable()
 export class AuthService {
   constructor(
@@ -11,9 +15,7 @@ export class AuthService {
     private prisma: PrismaService,
   ) {}
 
-  async create(data: CreateSessionDTO): Promise<string> {
-    const { email, password } = data;
-
+  async create({ email, password }: IRequest): Promise<string> {
     const user = await this.prisma.user.findUnique({
       where: {
         email,

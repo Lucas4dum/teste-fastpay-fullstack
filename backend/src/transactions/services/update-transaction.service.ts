@@ -1,15 +1,27 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UpdateTransactionDTO } from '../dtos/update-transaction.dto';
 
+interface IRequest {
+  description?: string;
+  amount?: number;
+  date?: string;
+  categoryId?: string;
+  id: string;
+}
 @Injectable()
 export class UpdateTransactionService {
   constructor(private prisma: PrismaService) {}
 
-  async update(data: UpdateTransactionDTO): Promise<void> {
-    if (data.categoryId) {
+  async update({
+    description,
+    amount,
+    date,
+    categoryId,
+    id,
+  }: IRequest): Promise<void> {
+    if (categoryId) {
       const category = await this.prisma.category.findUnique({
-        where: { id: data.categoryId },
+        where: { id: categoryId },
       });
       if (!category) {
         throw new HttpException(
@@ -20,7 +32,7 @@ export class UpdateTransactionService {
     }
 
     const transaction = await this.prisma.transaction.findUnique({
-      where: { id: data.id },
+      where: { id: id },
     });
     if (!transaction) {
       throw new HttpException('The specified transaction does not exist!', 410);
@@ -28,21 +40,21 @@ export class UpdateTransactionService {
 
     let correctedDate: string | undefined;
 
-    if (data.date && typeof data.date === 'string') {
-      correctedDate = this.correctDateFormat(data.date);
+    if (date && typeof date === 'string') {
+      correctedDate = this.correctDateFormat(date);
     }
 
     const transactionData = {
-      description: data?.description,
-      amount: data?.amount,
-      date: correctedDate,
-      categoryId: data?.categoryId,
+      ...(description !== undefined && { description: description }),
+      ...(amount !== undefined && { amount: amount }),
+      ...(correctedDate !== undefined && { date: correctedDate }),
+      ...(categoryId !== undefined && { categoryId: categoryId }),
     };
 
     try {
       await this.prisma.transaction.update({
         data: transactionData,
-        where: { id: data.id },
+        where: { id: id },
       });
     } catch (error) {
       throw new HttpException(

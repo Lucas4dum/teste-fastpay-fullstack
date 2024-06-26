@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { hash } from 'bcryptjs';
-import { CreateUserDTO } from '../dto/create-user.dto';
+interface IRequest {
+  email: string;
+  password: string;
+}
 
 @Injectable()
 export class CreateUserService {
@@ -11,7 +14,7 @@ export class CreateUserService {
     private jwt: JwtService,
   ) {}
 
-  async create({ email, password }: CreateUserDTO): Promise<string> {
+  async create({ email, password }: IRequest): Promise<string> {
     const user = await this.prisma.user.count({ where: { email } });
     if (user) {
       throw new HttpException(

@@ -58,8 +58,6 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         return { status: 200 }
       })
       .catch((error) => {
-        console.log('[handleSignIn] error: ', error)
-
         return { status: error.response.status, message: error.code }
       })
       .finally(() => {
