@@ -64,7 +64,7 @@ O teste fastpay é uma api RESTfull juntamente com um web site para o gerenciame
 Clone o projeto e acesse a pasta do mesmo.
 
 ```bash
-$ git clone https://github.com/Lucas4dum/teste-fastpay-fullstack
+$ git clone git@github.com:Lucas4dum/teste-fastpay-fullstack.git
 $ cd teste-fastpay-fullstack/backend
 ```
 
