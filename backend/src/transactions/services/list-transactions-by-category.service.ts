@@ -42,7 +42,7 @@ export class ListTransactionsByCategoryService {
             category: true,
           },
           skip: pageNumber === 1 ? 0 : pages,
-          take: pages,
+          take: pageSize,
         }),
         this.prisma.transaction.count({
           where: {

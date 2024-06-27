@@ -5,4 +5,6 @@ export default interface ITransactionSummary {
   income: number
   expenses: number
   total: number
+  totalPages: number
+  currentPage: number
 }

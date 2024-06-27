@@ -24,7 +24,6 @@ import { CategoryControllerSwaggerDecorators } from './decorators/category.swagg
 import { ListCategoriesService } from './services/list-categories.service';
 import { UpdateCategoryService } from './services/update-category.service';
 import { DeleteCategoryService } from './services/delete-category.service';
-import { ListSummaryOfTransactionsByCategoryService } from './services/list-summary-of-transactions-by-category.service';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('category')
@@ -36,7 +35,6 @@ export class CategoryController {
     private readonly listCategoriesService: ListCategoriesService,
     private readonly updateCategoryService: UpdateCategoryService,
     private readonly deleteCategoryService: DeleteCategoryService,
-    private readonly listSummaryOfTransactionsByCategoryService: ListSummaryOfTransactionsByCategoryService,
   ) {}
 
   @CategoryControllerSwaggerDecorators.CreateCategory()
@@ -91,17 +89,5 @@ export class CategoryController {
     await this.deleteCategoryService.delete(id);
 
     return res.status(HttpStatus.OK).json();
-  }
-
-  @CategoryControllerSwaggerDecorators.FindOneCategory()
-  @Get('/:id')
-  async findOne(
-    @Param('id') id: string,
-    @Res() res: Response,
-  ): Promise<Response> {
-    const category =
-      await this.listSummaryOfTransactionsByCategoryService.findOne(id);
-
-    return res.status(HttpStatus.OK).send({ category });
   }
 }

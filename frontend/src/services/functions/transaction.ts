@@ -1,3 +1,4 @@
+import IPagination from '~/interfaces/Ipagination'
 import ITransactionSummary from '~/interfaces/Itransaction-summary'
 import { api } from '~/libs/axios'
 
@@ -9,12 +10,20 @@ export interface ITransactionDataForm {
 }
 
 // Listar todas as transações
-export const listTransactions = async () => {
+export const listTransactions = async ({ page, size }: IPagination) => {
   try {
-    const response = await api.get('/transaction')
-    const { transactions, expenses, income, total }: ITransactionSummary =
-      response.data
-    return { transactions, expenses, income, total }
+    const response = await api.get('/transaction', {
+      params: { page, size },
+    })
+    const {
+      transactions,
+      expenses,
+      income,
+      total,
+      totalPages,
+      currentPage,
+    }: ITransactionSummary = response.data
+    return { transactions, expenses, income, total, totalPages, currentPage }
   } catch (error) {
     console.error('Error fetching transactions:', error)
     throw error
@@ -22,15 +31,27 @@ export const listTransactions = async () => {
 }
 
 // Listar todas as transações por ID da categoria
-export const listTransactionsByCategoryId = async (categoryId: string) => {
+export const listTransactionsByCategoryName = async ({
+  page,
+  size,
+  name,
+}: IPagination) => {
   try {
-    const response = await api.get(`/transaction/by-category/${categoryId}`)
-    const { transactions, expenses, income, total }: ITransactionSummary =
-      response.data
-    return { transactions, expenses, income, total }
+    const response = await api.get(`/transaction/by-category/${name}`, {
+      params: { page, size },
+    })
+    const {
+      transactions,
+      expenses,
+      income,
+      total,
+      totalPages,
+      currentPage,
+    }: ITransactionSummary = response.data
+    return { transactions, expenses, income, total, totalPages, currentPage }
   } catch (error) {
     console.error(
-      `Error fetching transactions for category with id ${categoryId}:`,
+      `Error fetching transactions for category with name ${name}:`,
       error,
     )
     throw error

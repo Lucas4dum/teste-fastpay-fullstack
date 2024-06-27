@@ -17,18 +17,6 @@ export const listCategories = async () => {
   }
 }
 
-// Listar uma categoria por ID
-export const listCategoryById = async (id: string) => {
-  try {
-    const response = await api.get(`/category/${id}`)
-    const category: ICategory = response.data.category
-    return category
-  } catch (error) {
-    console.error(`Error fetching category with id ${id}:`, error)
-    throw error
-  }
-}
-
 // Criar uma nova categoria
 export const createCategory = async (data: FormData) => {
   try {

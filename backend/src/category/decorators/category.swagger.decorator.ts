@@ -146,32 +146,4 @@ export class CategoryControllerSwaggerDecorators {
       }),
     );
   }
-
-  static FindOneCategory() {
-    return applyDecorators(
-      ApiOperation({
-        summary: 'Lista uma categoria.',
-        description:
-          'Rota utilizada para listar uma categoria e visualizar a soma das transações.<br/><br/><b>CAMPOS NECESSÁRIOS</b>\n\n*id: string\n\n',
-      }),
-      ApiBearerAuth(), // Indica que a autenticação via Bearer Token
-      ApiResponse({
-        status: 200,
-        schema: {
-          type: 'object',
-          example: {
-            category: {
-              name: 'Categoria teste',
-              amount: 100,
-            },
-          },
-        },
-      }),
-      ApiResponse({ status: 401, description: 'Unauthorized.' }),
-      ApiResponse({
-        status: 409,
-        description: 'The specified category does not exist!',
-      }),
-    );
-  }
 }
