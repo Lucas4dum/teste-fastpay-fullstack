@@ -29,7 +29,6 @@ export class ListTransactionsByCategoryService {
         },
       },
     });
-    console.log(category);
 
     const [transactions, totalTransactions, incomeResult, expensesResult] =
       await Promise.all([
